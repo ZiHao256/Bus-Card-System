@@ -22,6 +22,7 @@ private:
 public:
 	Student(int, string, string, string, int, int, string, string);
 	void show_info(void);
+	void top_up(void);
 	void get_on(char[]);
 	void get_off(char[]);
 	void log_out(void);
@@ -301,6 +302,11 @@ public:
 	static void create_teacher(void);
 	static void create_limit(void);
 
+	static void top_up(void);
+	static void top_up_student(void);
+	static void top_up_teacher(void);
+	static void top_up_limit(void);
+
 	static void show_card(void);
 	static void show_student_card(void);
 	static void show_teacher_card(void);
@@ -359,6 +365,14 @@ void Student::show_info(void) {
 	cout << "\t\t| 余额：\t" << this->remain << "\t\t\t|" << endl;
 	cout << "\t\t| 乘车次数：\t" << this->times << "\t\t\t|" << endl;
 	cout << "\t\t|=======================================|" << endl;
+}
+void Student::top_up(void) {
+	int add;
+	cout << "\t\t|===========请输入充值的金额==============|" << endl;
+	cin >> add;
+	this->remain += add;
+
+	this->show_info();
 }
 void Student::get_on(char number_bus[]) {
 	//修改remain times
@@ -513,7 +527,7 @@ void System::start(void) {
 	cout << "\t\t\t\t\t||                              ||" << endl;
 	cout << "\t\t\t\t\t||         4. 乘车              ||"<< endl;
 	cout << "\t\t\t\t\t||                              ||" << endl;
-	cout << "\t\t\t\t\t||         5. 其他              ||"<< endl;
+	cout << "\t\t\t\t\t||         5. 增加班车          ||"<< endl;
 	cout << "\t\t\t\t\t||                              ||" << endl;
 	cout << "\t\t\t\t\t||==============================||" << endl;
 	cout << "\t\t\t\t\t||==============================||" << endl;
@@ -936,6 +950,42 @@ void System::create_limit(void) {
 		cout << "已更新数据库" << endl;
 	}
 }
+void System::top_up(void) {
+	int choice_type;
+	cout << "请输入要充值一卡通的种类：" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         1. student card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         2. teacher card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         3. limit card       ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         4. 返回              ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cin >> choice_type;
+	switch (choice_type) {
+	case 1:
+		top_up_student();
+		break;
+	case 2:
+		log_out_teacher();
+		break;
+	case 3:
+		log_out_limit();
+		break;
+	default:
+		start();
+	}
+}
+void System::top_up_student(void) {
+	cout << "请输入一卡通卡号" << endl;
+	char number[20];
+	cin >> number;
+	Student s = get_student(number);
+	s.top_up();
+}
 void System::show_card(void) {
 	cout << "请输入要查询的一卡通种类" << endl;
 	cout << "1. student card" << endl;
@@ -1152,34 +1202,55 @@ void System::get_on_limit(char number[],char number_bus[]) {
 }
 void System::operate_card(void) {	
 	int choice_operation;
-	cout << "| - - - - - - - - - - - |" << endl;
-	cout << "|   请选择 1-4：" << "\t|" << endl;
-	cout << "|   1. 挂失一卡通" << "\t|" << endl;
-	cout << "|   2. 注销一卡通" << "\t|" << endl;
-	cout << "|   3. 解除挂失一卡通" << "\t|" << endl;
-	cout << "|   4. 其他" << "\t\t|" << endl;
-	cout << "| - - - - - - - - - - - |" << endl;
+
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         1. 充值一卡通        ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         2. 挂失一卡通        ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         3. 注销一卡通        ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         4. 解除挂失一卡通    ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         5. 返回              ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+
 	cin >> choice_operation;
 	switch (choice_operation) {
 	case 1:
-		report_loss();
+		top_up();
 		break;
 	case 2:
-		log_out();
+		report_loss();
 		break;
 	case 3:
+		log_out();
+		break;
+	case 4:
 		unlock_report_loss();
 		break;
 	default:
-		cout << "无该选项" << endl;
+		start();
 	}
 }
 void System::log_out(void) {
+
+
 	int choice_type;
 	cout << "请输入要注销一卡通的种类：" << endl;
-	cout << "1. student card" << endl;
-	cout << "2. teacher card" << endl;
-	cout << "3. limit card" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         1. student card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         2. teacher card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         3. limit card       ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         4. 返回              ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
 	cin >> choice_type;
 	switch (choice_type) {
 	case 1:
@@ -1192,7 +1263,7 @@ void System::log_out(void) {
 		log_out_limit();
 		break;
 	default:
-		cout << "无该选项" << endl;
+		start();
 	}
 
 }
@@ -1214,12 +1285,21 @@ void System::log_out_limit(void) {
 	Limit l = get_limit(number);
 	l.log_out();
 }
+
 void System::report_loss(void) {
 	int choice_type;
-	cout << "请输入要注销一卡通的种类：" << endl;
-	cout << "1. student card" << endl;
-	cout << "2. teacher card" << endl;
-	cout << "3. limit card" << endl;
+	cout << "请输入要挂失一卡通的种类：" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         1. student card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         2. teacher card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         3. limit card       ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         4. 返回              ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
 	cin >> choice_type;
 	switch (choice_type) {
 	case 1:
@@ -1232,7 +1312,7 @@ void System::report_loss(void) {
 		report_loss_limit();
 		break;
 	default:
-		cout << "无该选项" << endl;
+		start();
 	}
 }
 void System::report_loss_student(void) {
@@ -1259,9 +1339,17 @@ void System::report_loss_limit(void) {
 void System::unlock_report_loss(void) {
 	int choice_type;
 	cout << "请输入要解除注销一卡通的种类：" << endl;
-	cout << "1. student card" << endl;
-	cout << "2. teacher card" << endl;
-	cout << "3. limit card" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         1. student card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         2. teacher card     ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         3. limit card       ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||         4. 返回              ||" << endl;
+	cout << "\t\t\t\t\t||                              ||" << endl;
+	cout << "\t\t\t\t\t||==============================||" << endl;
 	cin >> choice_type;
 	switch (choice_type) {
 	case 1:
