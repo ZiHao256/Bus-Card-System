@@ -1,6 +1,5 @@
 ---
-description: XDU OOP Project by zihao
+description: Bus-Card-System source code.
 ---
-# Bus_Card_System
-
-XDU OOP Project by zihao
+* IDE: Visual Studio 2019
+* MySQL: Ver 8.0.3
